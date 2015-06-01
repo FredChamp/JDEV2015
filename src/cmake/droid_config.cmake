@@ -6,7 +6,7 @@ set(CROSS_COMPILING OFF CACHE BOOL "Cross compilation option")
 
 if(CROSS_COMPILING)
     if(NOT CMAKE_TOOLCHAIN_FILE)
-        execute_process(COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/android/clean_all.cmake)
+        execute_process(COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/../cmake/clean_all.cmake)
         set(CMAKE_TOOLCHAIN_FILE CACHE FILEPATH "Path to the toolchain file")
     endif()
 endif()
