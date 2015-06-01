@@ -19,7 +19,7 @@ set(APK_BUILD_TOOL    "gradle" CACHE STRING    "Build tool name will be used to 
     
 set(ANDROID_APK_RELEASE          "OFF"                     CACHE BOOL      "Create apk file ready for release? (signed, you have to enter a password during build, do also setup \"ANDROID_APK_SIGNER_KEYSTORE\" and \"ANDROID_APK_SIGNER_ALIAS\")")
 set(ANDROID_APK_TOP_LEVEL_DOMAIN "com"                       CACHE STRING    "Top level domain name of the organization (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
-set(ANDROID_APK_DOMAIN           "jdev2105"                    CACHE STRING    "Organization's domain (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
+set(ANDROID_APK_DOMAIN           "jdev2015"                    CACHE STRING    "Organization's domain (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
 set(ANDROID_APK_SUBDOMAIN        "MyAppName"                 CACHE STRING    "Any subdomains (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
 set(ANDROID_APK_SIGNER_KEYSTORE  "~/my-release-key.keystore" CACHE STRING    "Keystore for signing the apk file (only required for release apk)")
 set(ANDROID_APK_SIGNER_ALIAS     "myalias"                   CACHE STRING    "Alias for signing the apk file (only required for release apk)")
