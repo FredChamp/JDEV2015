@@ -1,8 +1,7 @@
 ################# Find lib #################
 
 find_library(ANDROID_NATIVE_APP_GLUE_LIB NAMES android_native_app REQUIRED)
-find_library(EGL_LIB NAME EGL REQUIRED)
-message(" EGL = ${egl}")
+
 set(sources
   main.c
 )
