@@ -67,7 +67,7 @@ setup_dependencies()
 # Remove old directories
  execute_process(
     #PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E remove_directory @CMAKE_INSTALL_PREFIX@/apk/assets
+    #COMMAND ${CMAKE_COMMAND} -E remove_directory @CMAKE_INSTALL_PREFIX@/apk/assets
     COMMAND ${CMAKE_COMMAND} -E remove_directory @CMAKE_INSTALL_PREFIX@/apk/src
     COMMAND ${CMAKE_COMMAND} -E remove_directory @CMAKE_INSTALL_PREFIX@/apk/libs
     COMMAND ${CMAKE_COMMAND} -E remove_directory @CMAKE_INSTALL_PREFIX@/apk/gen
