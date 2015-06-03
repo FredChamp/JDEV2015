@@ -28,6 +28,14 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 public class TeapotNativeActivity extends NativeActivity {
+    
+    static 
+    {
+       System.loadLibrary("gnustl_shared");
+       System.loadLibrary("TeapotNativeActivity"); 
+       
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

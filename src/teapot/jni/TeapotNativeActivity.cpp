@@ -32,7 +32,7 @@
 //-------------------------------------------------------------------------
 //Preprocessor
 //-------------------------------------------------------------------------
-#define HELPER_CLASS_NAME "com/sample/helper/NDKHelper" //Class name of helper function
+#define HELPER_CLASS_NAME "com/jdev2015/helper/NDKHelper" //Class name of helper function
 //-------------------------------------------------------------------------
 //Shared state for our app.
 //-------------------------------------------------------------------------
