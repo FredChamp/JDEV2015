@@ -33,12 +33,6 @@ macro(ant_build)
 
     else()
          message("\nAPK Debug build :\n")
-        
-        # In case of debug build, do also copy gdbserver
-        # add_custom_command(TARGET ${BASE_APP_NAME}
-       #      POST_BUILD
-       #      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_GDBSERVER} "${APK_INSTALL_DIR}/libs/${ARM_TARGET}"
-       #  )
        
         # Let Ant create the unsigned apk file
         execute_process(

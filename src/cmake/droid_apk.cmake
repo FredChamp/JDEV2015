@@ -47,16 +47,7 @@ macro(create_apk)
          )
     endforeach()
     
-    #Java files:
-    # Path variables are define in droid_setup.cmake
-    # message("- Coping Java files ...")
-    # foreach(JAVA_FILE ${JAVA_FILES})
-    #     get_filename_component(CURRENT_NAME ${JAVA_FILE} NAME)
-    #     execute_process(
-    #          COMMAND ${CMAKE_COMMAND} -E copy_if_different "${JAVA_FILE}" "${APK_INSTALL_DIR}/src/${QT_JAVA_PATH}/${CURRENT_NAME}"
-    #      )
-    # endforeach()
-    
+    #C++ lib:
     message("- Coping libraries ...")
     # Copy the used shared libraries
     foreach(value ${LIBS})

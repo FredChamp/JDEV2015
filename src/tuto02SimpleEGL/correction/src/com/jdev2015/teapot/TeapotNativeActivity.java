@@ -32,7 +32,7 @@ public class TeapotNativeActivity extends NativeActivity {
     static 
     {
        System.loadLibrary("gnustl_shared");
-       System.loadLibrary("TeapotNativeActivity"); 
+       System.loadLibrary("teapot"); 
        
     }
     

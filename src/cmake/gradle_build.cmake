@@ -3,6 +3,8 @@
 ##################################################
 
 macro(gradle_build)
+    configure_file("${CMAKE_DIRECTORY}/build.gradle" "${APK_INSTALL_DIR}/build.gradle")
+    
     set(APK_BUILD_PATH build/outputs/apk)
     if(UNIX )
         if(NOT EXISTS "${APK_INSTALL_DIR}/gradlew")

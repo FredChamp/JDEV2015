@@ -2,8 +2,6 @@
 #  Variables usefull for apk buld
 ##############################################
 set(LIB_PREFIX "lib")
-set(QT_JAVA_ROOT src/android/java/src)
-set(QT_JAVA_PATH org/qtproject/qt5/android/bindings)
 
 ##################################################
 #  Macro
