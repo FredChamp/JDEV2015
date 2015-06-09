@@ -9,8 +9,6 @@ macro(create_apk)
     elseif( ${APK_BUILD_TOOL} STREQUAL "gradle" )
         include(${CMAKE_DIRECTORY}/gradle_build.cmake REQUIRED)
     endif()
-
-    set(ANDROID_APK_THEME "android:theme=\"@android:style/Theme.NoTitleBar.Fullscreen\"")
         
     execute_process(
         COMMAND ${ANDROID_PRG} update project -t android-${ANDROID_API_LEVEL} --name "${BASE_APP_NAME}" --path "${APK_INSTALL_DIR}"

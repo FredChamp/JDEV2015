@@ -1,42 +1,71 @@
 package com.jdev2015.NativeVTK;
 
-public class LauncherActivity extends android.app.NativeActivity {
+import android.app.NativeActivity;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.view.Window;
+
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.os.Handler;
+
+
+public class LauncherActivity extends NativeActivity {
+    
+    // private ImageView m_logo;
+    PopupWindow m_popupWindow;
+    LauncherActivity m_activity;
+
     static 
     {
        System.loadLibrary("gnustl_shared");
-       System.loadLibrary("vtkglew-6.2");
-       System.loadLibrary("vtksys-6.2");
-       System.loadLibrary("vtkCommonCore-6.2");
-       System.loadLibrary("vtkCommonMath-6.2");
-       System.loadLibrary("vtkCommonMisc-6.2");
-       System.loadLibrary("vtkCommonSystem-6.2");
-       System.loadLibrary("vtkCommonTransforms-6.2");
-       System.loadLibrary("vtkCommonDataModel-6.2");
-       System.loadLibrary("vtkCommonExecutionModel-6.2");
-       System.loadLibrary("vtkCommonComputationalGeometry-6.2");
-       System.loadLibrary("vtkIOCore-6.2");
-       System.loadLibrary("vtkmetaio-6.2");
-       System.loadLibrary("vtkDICOMParser-6.2");
-       System.loadLibrary("tiff");
-       System.loadLibrary("jpeg");
-       System.loadLibrary("png16d");
-       System.loadLibrary("vtkIOImage-6.2");
-       System.loadLibrary("vtkImagingCore-6.2");
-       System.loadLibrary("vtkImagingHybrid-6.2");
-       
-       System.loadLibrary("vtkalglib-6.2");
-       System.loadLibrary("vtkImagingFourier-6.2");
-       System.loadLibrary("vtkFiltersCore-6.2");
-       System.loadLibrary("vtkFiltersGeneral-6.2");
-       System.loadLibrary("vtkFiltersStatistics-6.2");
-       System.loadLibrary("vtkFiltersSources-6.2");
-       System.loadLibrary("vtkFiltersGeometry-6.2");
-       System.loadLibrary("vtkFiltersExtraction-6.2");
-       // System.loadLibrary("vtkFiltersTexture-6.2");
-       
-       System.loadLibrary("vtkRenderingCore-6.2");
-       System.loadLibrary("vtkRenderingOpenGL2-6.2");
        System.loadLibrary("NativeVTK"); 
        
     }
+
+    @Override
+      protected void onCreate(Bundle savedInstanceState) 
+      {
+
+          this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+          super.onCreate(savedInstanceState);
+         // getWindow().takeSurface( null );
+       //   getWindow().setContentView( R.layout.activity_launcher );
+    } 
+    
+    
+    public void showUI()
+    {
+        if( m_popupWindow != null )
+            return;
+
+        m_activity = this;
+
+        this.runOnUiThread(new Runnable()  {
+            @Override
+            public void run()  {
+                LayoutInflater layoutInflater
+                = (LayoutInflater)getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = layoutInflater.inflate(R.layout.activity_launcher, null);
+                m_popupWindow = new PopupWindow(
+                        popupView,
+                        LayoutParams.WRAP_CONTENT,
+                        LayoutParams.WRAP_CONTENT);
+
+                LinearLayout mainLayout = new LinearLayout(m_activity);
+                mainLayout.setPadding(0, 0, 0, 0);
+                m_activity.setContentView(mainLayout);
+
+                // Show our UI over NativeActivity window
+                m_popupWindow.showAtLocation(mainLayout, Gravity.BOTTOM | Gravity.RIGHT, 10, 0);
+                m_popupWindow.update();
+
+            }});
+    }
+ 
  }

@@ -18,23 +18,21 @@
 #include <jni.h>
 #include <errno.h>
 
-#include "vtkNew.h"
+#include "JNIHelper/JNIHelper.hpp"
 
-#include "vtkActor.h"
-#include "vtkCamera.h"
-#include "vtkConeSource.h"
-#include "vtkDebugLeaks.h"
-#include "vtkGlyph3D.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderer.h"
-#include "vtkSphereSource.h"
-#include "vtkProperty.h"
-#include "vtkTexture.h"
-#include "vtkImageData.h"
+#include <vtkNew.h>
+#include <vtkActor.h>
+#include <vtkCamera.h>
+#include <vtkDebugLeaks.h>
+#include <vtkGlyph3D.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkCubeSource.h>
+#include <vtkProperty.h>
 #include <vtkInteractorStyleMultiTouchCamera.h>
-#include "vtkAndroidRenderWindowInteractor.h"
+#include <vtkAndroidRenderWindowInteractor.h>
 
 #include <android/log.h>
 #include <android_native_app_glue.h>
@@ -42,60 +40,60 @@
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeVTK", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "NativeVTK", __VA_ARGS__))
 
+#define CLASS_NAME "com/jdev2015/NativeVTK/LauncherActivity"
+
 /**
 * This is the main entry point of a native application that is using
 * android_native_app_glue.  It runs in its own thread, with its own
 * event loop for receiving input events and doing other things.
 */
-void android_main(struct android_app* state)
+
+static void callActivityVoidMethod(struct android_app* app, const char* method_name )
+{
+    JNIEnv *jni;
+    app->activity->vm->AttachCurrentThread( &jni, NULL );
+
+    //Default class retrieval
+    jclass clazz = jni->GetObjectClass( app->activity->clazz );
+    jmethodID methodID = jni->GetMethodID( clazz, method_name, "()V" );
+    jni->CallVoidMethod( app->activity->clazz, methodID );
+    
+    app->activity->vm->DetachCurrentThread();
+}
+
+void android_main(struct android_app* app)
 {
     // Make sure glue isn't stripped.
     app_dummy();
-  
-    vtkImageData* colorImage = vtkImageData::New();
 
     vtkNew<vtkRenderWindow> renWin;
     vtkNew<vtkRenderer> renderer;
     vtkNew<vtkAndroidRenderWindowInteractor> iren;
     iren->SetInteractorStyle( vtkInteractorStyleMultiTouchCamera::New() );
- 
-    // this line is key, it provides the android
-    // state to VTK
-    iren->SetAndroidApplication(state);
+
+    iren->SetAndroidApplication(app);
 
     renWin->AddRenderer(renderer.Get());
     iren->SetRenderWindow(renWin.Get());
 
-    vtkNew<vtkSphereSource> sphere;
-    sphere->SetThetaResolution(8);
-    sphere->SetPhiResolution(8);
+    vtkNew<vtkCubeSource> cube;
+    cube->SetXLength(8);
+    cube->SetYLength(8);
+    cube->SetZLength(8);
 
-    vtkNew<vtkPolyDataMapper> sphereMapper;
-    sphereMapper->SetInputConnection(sphere->GetOutputPort());
-    vtkNew<vtkActor> sphereActor;
-    sphereActor->SetMapper(sphereMapper.Get());
+    vtkNew<vtkPolyDataMapper> cubeMapper;
+    cubeMapper->SetInputConnection(cube->GetOutputPort());
+    vtkNew<vtkActor> cubeActor;
+    cubeActor->SetMapper(cubeMapper.Get());
 
-    vtkNew<vtkConeSource> cone;
-    cone->SetResolution(6);
-
-    vtkNew<vtkGlyph3D> glyph;
-    glyph->SetInputConnection(sphere->GetOutputPort());
-    glyph->SetSourceConnection(cone->GetOutputPort());
-    glyph->SetVectorModeToUseNormal();
-    glyph->SetScaleModeToScaleByVector();
-    glyph->SetScaleFactor(0.25);
-
-    vtkNew<vtkPolyDataMapper> spikeMapper;
-    spikeMapper->SetInputConnection(glyph->GetOutputPort());
-
-    vtkNew<vtkActor> spikeActor;
-    spikeActor->SetMapper(spikeMapper.Get());
-
-    renderer->AddActor(sphereActor.Get());
-    renderer->AddActor(spikeActor.Get());
+    renderer->AddActor(cubeActor.Get());
     renderer->SetBackground(0.4,0.5,0.6);
     renderer->ResetCamera();
 
     renWin->Render();
+
+    callActivityVoidMethod(app,"showUI");
+ 
     iren->Start();
+    
 }

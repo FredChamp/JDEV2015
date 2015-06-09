@@ -73,6 +73,7 @@ setup_dependencies()
     # COMMAND ${CMAKE_COMMAND} -E remove_directory @CMAKE_INSTALL_PREFIX@/apk/gen
     # COMMAND ${CMAKE_COMMAND} -E remove_directory @CMAKE_INSTALL_PREFIX@/apk/bin
     COMMAND ${CMAKE_COMMAND} -E copy_directory @CMAKE_CURRENT_SOURCE_DIR@/res @CMAKE_INSTALL_PREFIX@/apk/res
+    COMMAND ${CMAKE_COMMAND} -E copy_directory @CMAKE_CURRENT_SOURCE_DIR@/assets @CMAKE_INSTALL_PREFIX@/apk/assets
 )
        
 ##################################################

@@ -7,27 +7,27 @@ macro(gradle_build)
     
     set(APK_BUILD_PATH build/outputs/apk)
     if(UNIX )
-        if(NOT EXISTS "${APK_INSTALL_DIR}/gradlew")
+        if(NOT EXISTS "${WORKING_DIR}/gradlew")
             message("Creating gradle wrapper:")
             execute_process(
                 COMMAND ${GRADLE_PRG} wrapper
-                WORKING_DIRECTORY "${APK_INSTALL_DIR}"
+                WORKING_DIRECTORY "${WORKING_DIR}"
             )
         endif()
         
-        set(WRAPPER "${APK_INSTALL_DIR}/gradlew")
+        set(WRAPPER "${WORKING_DIR}/gradlew")
         
     elseif()
         
-        if(NOT EXISTS "${APK_INSTALL_DIR}/gradlew.bat")
+        if(NOT EXISTS "${WORKING_DIR}/gradlew.bat")
             message("Creating gradle wrapper:")
             execute_process(
                 COMMAND ${GRADLE_PRG} wrapper
-                WORKING_DIRECTORY "${APK_INSTALL_DIR}"
+                WORKING_DIRECTORY "${WORKING_DIR}"
             )
         endif()
         
-        set(WRAPPER "${APK_INSTALL_DIR}/gradlew.bat")
+        set(WRAPPER "${WORKING_DIR}/gradlew.bat")
         
     endif()
     
@@ -36,7 +36,7 @@ macro(gradle_build)
         # Lets gralde create the apk file
         message("\nAPK Release build :")
         execute_process(
-            COMMAND ${WRAPPER} assembleRelease
+            COMMAND ${WRAPPER} assembleRelease --daemon --parallel
             WORKING_DIRECTORY "${APK_INSTALL_DIR}"
         )
         
@@ -46,7 +46,7 @@ macro(gradle_build)
         message("\nAPK Debug build :")
         # Lets gradle create the apk file
         execute_process(
-            COMMAND ${WRAPPER} assembleDebug
+            COMMAND ${WRAPPER} assembleDebug --daemon --parallel
             WORKING_DIRECTORY "${APK_INSTALL_DIR}"
         )
 
