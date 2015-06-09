@@ -3,14 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:padding="0dp"
-    android:layout_margin="0dp"
+    android:padding="50dp"
+    android:layout_margin="10dp"
     android:orientation="vertical">
 
     <com.jdev2015.widget.VerticalSeekBar
-      android:id="@+id/seekBar1"
+      android:id="@+id/seekBar_opacity"
       android:layout_width="wrap_content"
       android:layout_height="500dp"
+      android:max="100"
       />
         
 </LinearLayout>

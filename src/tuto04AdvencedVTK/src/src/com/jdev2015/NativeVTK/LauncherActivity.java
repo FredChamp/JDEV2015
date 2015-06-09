@@ -12,10 +12,14 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.os.Handler;
-
+import android.widget.SeekBar;
+import android.util.Log;
 
 public class LauncherActivity extends NativeActivity {
     
+    private static final String TAG = "LauncherActivity";
+    
+    private SeekBar seekBar;
     // private ImageView m_logo;
     PopupWindow m_popupWindow;
     PopupWindow m_popupSlider;
@@ -33,11 +37,8 @@ public class LauncherActivity extends NativeActivity {
       {
 
           this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-          super.onCreate(savedInstanceState);
-         // getWindow().takeSurface( null );
-       //   getWindow().setContentView( R.layout.activity_launcher );
+          super.onCreate(savedInstanceState);    
     } 
-    
     
     public void showUI()
     {
@@ -87,17 +88,44 @@ public class LauncherActivity extends NativeActivity {
                 m_popupSlider = new PopupWindow(
                         popupView,
                             LayoutParams.WRAP_CONTENT,
-                            LayoutParams.WRAP_CONTENT);
+                            LayoutParams.MATCH_PARENT);
 
                 LinearLayout mainLayout = new LinearLayout(m_activity);
                 // mainLayout.setPadding(0, 0, 0, 0);
                 m_activity.setContentView(mainLayout);
 
                 // Show our UI over NativeActivity window
-                m_popupSlider.showAtLocation(mainLayout, Gravity.TOP | Gravity.LEFT, 100, 100);
+                m_popupSlider.showAtLocation(mainLayout, Gravity.TOP | Gravity.LEFT, 0,0);
                 m_popupSlider.update();
+                
+                seekBar = (SeekBar) popupView.findViewById(R.id.seekBar_opacity);
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() 
+                {
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) 
+                    {
+                        Log.i(TAG, "progress =" + progress);
+                        changeOpacity(progress);
+
+                    }
+                });
 
             }});
+            
+         
     }
+    
+    public static native void changeOpacity(int value);
  
  }

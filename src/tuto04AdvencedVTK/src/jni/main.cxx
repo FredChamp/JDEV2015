@@ -21,6 +21,7 @@
 #include <vtkNew.h>
 #include <vtkActor.h>
 #include <vtkCamera.h>
+#include "vtkCommand.h"
 #include <vtkDebugLeaks.h>
 #include <vtkGlyph3D.h>
 #include <vtkPolyData.h>
@@ -40,13 +41,11 @@
 
 #define CLASS_NAME "com/jdev2015/NativeVTK/LauncherActivity"
 
-/**
-* This is the main entry point of a native application that is using
-* android_native_app_glue.  It runs in its own thread, with its own
-* event loop for receiving input events and doing other things.
-*/
+static vtkActor* s_cubeActor = NULL;
+static vtkAndroidRenderWindowInteractor* iren = NULL;
+static struct android_app* s_app = NULL;
 
-static void callActivityVoidMethod(struct android_app* app, const char* method_name )
+void callActivityVoidMethod(struct android_app* app, const char* method_name )
 {
     JNIEnv *jni;
     app->activity->vm->AttachCurrentThread( &jni, NULL );
@@ -59,14 +58,45 @@ static void callActivityVoidMethod(struct android_app* app, const char* method_n
     app->activity->vm->DetachCurrentThread();
 }
 
+void registerNatives(struct android_app* app,JNINativeMethod* methods, int nbMethods)
+{
+    JNIEnv *jni;
+    app->activity->vm->AttachCurrentThread( &jni, NULL );
+    jclass clazz = jni->GetObjectClass( app->activity->clazz );
+    jni->RegisterNatives(clazz, methods, nbMethods);
+    app->activity->vm->DetachCurrentThread();
+}
+
+static void changeOpacity(JNIEnv *env, jobject thiz, int value)
+{
+    LOGI(" OPACITY = %d",value);
+    double opacity = static_cast< double >(value) / 100.;
+    s_cubeActor->GetProperty()->SetOpacity(opacity);
+
+    iren->Modified();
+    s_app->redrawNeeded = 1;
+}
+
+/**
+* This is the main entry point of a native application that is using
+* android_native_app_glue.  It runs in its own thread, with its own
+* event loop for receiving input events and doing other things.
+*/
 void android_main(struct android_app* app)
 {
     // Make sure glue isn't stripped.
     app_dummy();
+    s_app = app;
+    JNINativeMethod methods[] =
+    {
+        {"changeOpacity", "(I)V", reinterpret_cast<void *>(changeOpacity)}
+    };
+    registerNatives(app,methods, 1);
 
     vtkNew<vtkRenderWindow> renWin;
     vtkNew<vtkRenderer> renderer;
-    vtkNew<vtkAndroidRenderWindowInteractor> iren;
+    // vtkNew<vtkAndroidRenderWindowInteractor> iren;
+    iren = vtkAndroidRenderWindowInteractor::New();
     iren->SetInteractorStyle( vtkInteractorStyleMultiTouchCamera::New() );
 
     iren->SetAndroidApplication(app);
@@ -81,10 +111,10 @@ void android_main(struct android_app* app)
 
     vtkNew<vtkPolyDataMapper> cubeMapper;
     cubeMapper->SetInputConnection(cube->GetOutputPort());
-    vtkNew<vtkActor> cubeActor;
-    cubeActor->SetMapper(cubeMapper.Get());
+    s_cubeActor = vtkActor::New();
+    s_cubeActor->SetMapper(cubeMapper.Get());
 
-    renderer->AddActor(cubeActor.Get());
+    renderer->AddActor(s_cubeActor);
     renderer->SetBackground(0.4,0.5,0.6);
     renderer->ResetCamera();
 
