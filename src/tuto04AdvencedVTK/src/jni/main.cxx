@@ -18,8 +18,6 @@
 #include <jni.h>
 #include <errno.h>
 
-#include "JNIHelper/JNIHelper.hpp"
-
 #include <vtkNew.h>
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -93,6 +91,8 @@ void android_main(struct android_app* app)
     renWin->Render();
 
     callActivityVoidMethod(app,"showUI");
+    callActivityVoidMethod(app,"showSlider");
+ 
  
     iren->Start();
     

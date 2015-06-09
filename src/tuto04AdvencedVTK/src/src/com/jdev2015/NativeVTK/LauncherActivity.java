@@ -18,6 +18,7 @@ public class LauncherActivity extends NativeActivity {
     
     // private ImageView m_logo;
     PopupWindow m_popupWindow;
+    PopupWindow m_popupSlider;
     LauncherActivity m_activity;
 
     static 
@@ -64,6 +65,37 @@ public class LauncherActivity extends NativeActivity {
                 // Show our UI over NativeActivity window
                 m_popupWindow.showAtLocation(mainLayout, Gravity.BOTTOM | Gravity.RIGHT, 10, 0);
                 m_popupWindow.update();
+
+            }});
+    }
+    
+    
+    public void showSlider()
+    {
+        if( m_popupSlider != null )
+            return;
+
+        m_activity = this;
+
+        this.runOnUiThread(new Runnable()  {
+            @Override
+            public void run()  {
+                LayoutInflater layoutInflater
+                = (LayoutInflater)getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = layoutInflater.inflate(R.layout.activity_slider, null);
+                m_popupSlider = new PopupWindow(
+                        popupView,
+                            LayoutParams.WRAP_CONTENT,
+                            LayoutParams.WRAP_CONTENT);
+
+                LinearLayout mainLayout = new LinearLayout(m_activity);
+                // mainLayout.setPadding(0, 0, 0, 0);
+                m_activity.setContentView(mainLayout);
+
+                // Show our UI over NativeActivity window
+                m_popupSlider.showAtLocation(mainLayout, Gravity.TOP | Gravity.LEFT, 100, 100);
+                m_popupSlider.update();
 
             }});
     }
