@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.os.Handler;
 import android.widget.SeekBar;
+import android.widget.Button;
 import android.util.Log;
 
 public class LauncherActivity extends NativeActivity {
@@ -20,6 +21,8 @@ public class LauncherActivity extends NativeActivity {
     private static final String TAG = "LauncherActivity";
     
     private SeekBar seekBar;
+    // private Button blueButton;
+    // private Button redButton;
     // private ImageView m_logo;
     PopupWindow m_popupWindow;
     PopupWindow m_popupSlider;
@@ -120,6 +123,21 @@ public class LauncherActivity extends NativeActivity {
 
                     }
                 });
+                
+                    final Button blueButton = (Button) popupView.findViewById(R.id.blue_button);
+                    blueButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            changeColor(true);
+                        }
+                    });
+                
+
+                    final Button redButton = (Button) popupView.findViewById(R.id.red_button);
+                    redButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            changeColor(false);
+                        }
+                    });
 
             }});
             
@@ -127,5 +145,6 @@ public class LauncherActivity extends NativeActivity {
     }
     
     public static native void changeOpacity(int value);
+    public static native void changeColor(boolean color);
  
  }
