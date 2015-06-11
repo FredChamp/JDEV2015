@@ -14,6 +14,7 @@ import android.widget.PopupWindow;
 import android.os.Handler;
 import android.widget.SeekBar;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.util.Log;
 
 public class LauncherActivity extends NativeActivity {
@@ -26,6 +27,7 @@ public class LauncherActivity extends NativeActivity {
     // private ImageView m_logo;
     PopupWindow m_popupWindow;
     PopupWindow m_popupSlider;
+    PopupWindow m_popupRadio;
     LauncherActivity m_activity;
 
     static 
@@ -56,7 +58,7 @@ public class LauncherActivity extends NativeActivity {
                 LayoutInflater layoutInflater
                 = (LayoutInflater)getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupView = layoutInflater.inflate(R.layout.activity_launcher, null);
+                View popupView = layoutInflater.inflate(R.layout.activity_logos, null);
                 m_popupWindow = new PopupWindow(
                         popupView,
                         LayoutParams.WRAP_CONTENT,
@@ -87,7 +89,7 @@ public class LauncherActivity extends NativeActivity {
                 LayoutInflater layoutInflater
                 = (LayoutInflater)getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupView = layoutInflater.inflate(R.layout.activity_slider, null);
+                View popupView = layoutInflater.inflate(R.layout.activity_param, null);
                 m_popupSlider = new PopupWindow(
                         popupView,
                             LayoutParams.WRAP_CONTENT,
@@ -119,7 +121,7 @@ public class LauncherActivity extends NativeActivity {
                     public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) 
                     {
                         Log.i(TAG, "progress =" + progress);
-                        changeOpacity(progress);
+                        changeOpacity(progress); 
 
                     }
                 });
@@ -140,11 +142,68 @@ public class LauncherActivity extends NativeActivity {
                     });
 
             }});
-            
-         
+    }
+    
+    
+    public void showRadioButton()
+    {
+        if( m_popupRadio != null )
+            return;
+
+        m_activity = this;
+
+        this.runOnUiThread(new Runnable()  {
+            @Override
+            public void run()  {
+                LayoutInflater layoutInflater
+                = (LayoutInflater)getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = layoutInflater.inflate(R.layout.activity_objects, null);
+                m_popupRadio = new PopupWindow(
+                        popupView,
+                            LayoutParams.WRAP_CONTENT,
+                            LayoutParams.MATCH_PARENT);
+
+                LinearLayout mainLayout = new LinearLayout(m_activity);
+                // mainLayout.setPadding(0, 0, 0, 0);
+                m_activity.setContentView(mainLayout);
+
+                // Show our UI over NativeActivity window
+                m_popupRadio.showAtLocation(mainLayout, Gravity.TOP | Gravity.RIGHT, 0,0);
+                m_popupRadio.update();
+                
+                
+                RadioGroup radioGroup = (RadioGroup) popupView.findViewById(R.id.radio_group);       
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() 
+                {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                    // Check which radio button was clicked
+                    switch(checkedId) 
+                    {
+                        case R.id.radio_sphere:
+                             Log.i(TAG, "Sphere checked");
+                                showSphere();
+                                break;
+                        case R.id.radio_cube:
+                            Log.i(TAG, "Cube checked");
+                                showCube();
+                                break;
+                    }
+                    }
+                });
+                
+
+                
+
+            }});
     }
     
     public static native void changeOpacity(int value);
     public static native void changeColor(boolean color);
+    public static native void showSphere();
+    public static native void showCube();
+ 
  
  }

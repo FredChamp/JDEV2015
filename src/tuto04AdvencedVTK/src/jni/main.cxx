@@ -30,74 +30,28 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkCubeSource.h>
+#include <vtkSphereSource.h>
 #include <vtkProperty.h>
 #include <vtkInteractorStyleMultiTouchCamera.h>
 #include <vtkAndroidRenderWindowInteractor.h>
 
+#include <unistd.h>
+
+
 #include <android/log.h>
+#include <android/input.h>
 #include <android_native_app_glue.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeVTK", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "NativeVTK", __VA_ARGS__))
+#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "NativeVTK", __VA_ARGS__))
 
 #define CLASS_NAME "com/jdev2015/NativeVTK/LauncherActivity"
 
+static android_app* s_app = NULL;
 static vtkActor* s_cubeActor = NULL;
-static vtkAndroidRenderWindowInteractor* iren = NULL;
-static struct android_app* s_app = NULL;
-
-
-//
-//
-// class ActorObserver : public vtkCommand
-// {
-// public:
-//   static ActorObserver *New()
-//     {
-//     return new ActorObserver;
-//     }
-//
-//   void SetRenderWindow( vtkRenderWindow *renWin)
-//     {
-//     if (this->RenderWindow)
-//       {
-//       this->RenderWindow->UnRegister(this);
-//       }
-//     this->RenderWindow = renWin;
-//     this->RenderWindow->Register(this);
-//
-//     }
-//   virtual void Execute(vtkObject *vtkNotUsed(caller),
-//                        unsigned long event,
-//                        void *vtkNotUsed(calldata))
-//     {
-//     if(this->RenderWindow != 0)
-//       {
-//       switch(event)
-//         {
-//         case vtkCommand::ModifiedEvent:
-//           this->RenderWindow->Render();
-//           break;
-//         }
-//       }
-//     }
-//
-// protected:
-//   ActorObserver()
-//     {
-//     this->RenderWindow = 0;
-//     }
-//   ~ActorObserver()
-//     {
-//     if(this->RenderWindow)
-//       {
-//       this->RenderWindow->UnRegister(this);
-//       this->RenderWindow = 0;
-//       }
-//     }
-//   vtkRenderWindow *RenderWindow;
-// };
- 
+static vtkActor* s_sphereActor = NULL;
+static vtkRenderer* renderer = NULL;
 
 //------------------------------------------------------------------------------
 
@@ -127,48 +81,93 @@ void registerNatives(struct android_app* app,JNINativeMethod* methods, int nbMet
 
 //------------------------------------------------------------------------------
 
+void cubeActorCallbackMethod(vtkObject* caller, long unsigned int eventId, void* clientData, void* callData)
+{
+    vtkActor *iren = static_cast<vtkActor*>(caller);
+     LOGI("Callback: cube Actor modified");
+     
+     size_t cmd = 4;
+     if (write(s_app->msgwrite, &cmd, sizeof(cmd)) != sizeof(cmd)) {
+         LOGE("Failure writing android_app cmd: %s\n", strerror(errno));
+     }
+}
+
+//------------------------------------------------------------------------------
+
 static void changeOpacity(JNIEnv *env, jobject thiz, int value)
 {
+    LOGI("C++ opacity = %d",value);
     
-    LOGI(" OPACITY = %d",value);
+    vtkActor* current;
+    if(s_cubeActor->GetVisibility())
+    {
+        current = s_cubeActor;
+    }
+    else if(s_sphereActor->GetVisibility())
+    {
+        current = s_sphereActor;
+    }
+    
     double opacity = static_cast< double >(value) / 100.;
-    s_cubeActor->GetProperty()->SetOpacity(opacity);
-    s_cubeActor->Modified();
-    iren->Modified();
-    
-
+    current->GetProperty()->SetOpacity(opacity);
+    current->Modified();
 }
 
 //------------------------------------------------------------------------------
 
 static void changeColor(JNIEnv *env, jobject thiz, bool color)
 {
+    vtkActor* current;
+    if(s_cubeActor->GetVisibility())
+    {
+        current = s_cubeActor;
+    }
+    else if(s_sphereActor->GetVisibility())
+    {
+        current = s_sphereActor;
+    }
     
     if(color)
     {
-        LOGI(" COLOR = BLUE");
-        s_cubeActor->GetProperty()->SetColor(0., 0., 1.);
+        LOGI("C++ color = BLUE");
+        current->GetProperty()->SetColor(0.2, 0.2, 1.);
     }
     else
     {
-        LOGI(" COLOR = RED");
-        s_cubeActor->GetProperty()->SetColor(1., 0., 0.); 
+        LOGI(" C++ color = RED");
+        current->GetProperty()->SetColor(1., 0.2, 0.2); 
     }
-       
-    s_cubeActor->Modified();
-    iren->Modified();
-
+    current->Modified();
 }
 
 //------------------------------------------------------------------------------
 
- void actorCallbackMethod(vtkObject* caller, long unsigned int eventId, void* clientData, void* callData)
- {
-     vtkActor *iren = static_cast<vtkActor*>(caller);
-      LOGI(" ACTOR MODIFIED !!!!");
- }
- 
- //------------------------------------------------------------------------------
+static void showSphere(JNIEnv *env, jobject thiz)
+{
+    LOGI("C++ showSphere");
+     
+    s_cubeActor->VisibilityOff();
+    s_sphereActor->VisibilityOn();
+    
+    s_cubeActor->Modified();
+    s_sphereActor->Modified();
+}
+
+//------------------------------------------------------------------------------
+
+static void showCube(JNIEnv *env, jobject thiz)
+{
+    LOGI("C++ showCube");
+    
+    s_sphereActor->VisibilityOff();
+    s_cubeActor->VisibilityOn();
+    
+    s_sphereActor->Modified();
+    s_cubeActor->Modified();
+}
+
+//------------------------------------------------------------------------------
+
  
 /**
 * This is the main entry point of a native application that is using
@@ -180,48 +179,70 @@ void android_main(struct android_app* app)
     // Make sure glue isn't stripped.
     app_dummy();
     s_app = app;
+    
     JNINativeMethod methods[] =
     {
         {"changeOpacity", "(I)V", reinterpret_cast<void *>(changeOpacity)},
-        {"changeColor", "(Z)V", reinterpret_cast<void *>(changeColor)}
+        {"changeColor", "(Z)V", reinterpret_cast<void *>(changeColor)},
+        {"showSphere", "()V", reinterpret_cast<void *>(showSphere)},
+        {"showCube", "()V", reinterpret_cast<void *>(showCube)}
     };
     registerNatives(app,methods, sizeof(methods) / sizeof(methods[0]));
 
     vtkNew<vtkRenderWindow> renWin;
-    vtkNew<vtkRenderer> renderer;
-    // vtkNew<vtkAndroidRenderWindowInteractor> iren;
-    iren = vtkAndroidRenderWindowInteractor::New();
+    // vtkNew<vtkRenderer> renderer;
+    renderer = vtkRenderer::New();
+    vtkNew<vtkAndroidRenderWindowInteractor> iren;
     iren->SetInteractorStyle( vtkInteractorStyleMultiTouchCamera::New() );
 
     iren->SetAndroidApplication(app);
 
-    renWin->AddRenderer(renderer.Get());
+    renWin->AddRenderer(renderer);
     iren->SetRenderWindow(renWin.Get());
 
     vtkNew<vtkCubeSource> cube;
     cube->SetXLength(8);
     cube->SetYLength(8);
     cube->SetZLength(8);
+    
+    vtkNew<vtkSphereSource> sphere;
+    sphere->SetRadius(4);
+    sphere->SetThetaResolution(20);
+    sphere->SetPhiResolution(20);
 
     vtkNew<vtkPolyDataMapper> cubeMapper;
     cubeMapper->SetInputConnection(cube->GetOutputPort());
-    s_cubeActor = vtkActor::New();
-    s_cubeActor->SetMapper(cubeMapper.Get());
+    
+    vtkNew<vtkPolyDataMapper> sphereMapper;
+    sphereMapper->SetInputConnection(sphere->GetOutputPort());
+    
+    vtkNew<vtkActor> cubeActor;
+    cubeActor->SetMapper(cubeMapper.Get());
+    cubeActor->VisibilityOff();
+    
+    vtkNew<vtkActor> sphereActor;
+    sphereActor->SetMapper(sphereMapper.Get());
+    
+    s_cubeActor = cubeActor.Get();
+    s_sphereActor = sphereActor.Get();
 
-    renderer->AddActor(s_cubeActor);
-    renderer->SetBackground(0.4,0.5,0.6);
+    
+    renderer->AddActor(sphereActor.Get());
+    renderer->AddActor(cubeActor.Get());
+    renderer->SetBackground(0.26,0.28,0.41);
     renderer->ResetCamera();
+    renderer->SetLightFollowCamera(true);
     
     vtkNew<vtkCallbackCommand> actorCallback;
-    actorCallback->SetCallback ( actorCallbackMethod );
-    s_cubeActor->AddObserver ( vtkCommand::ModifiedEvent, actorCallback.Get() );
+    actorCallback->SetCallback ( cubeActorCallbackMethod );
+    cubeActor->AddObserver ( vtkCommand::ModifiedEvent, actorCallback.Get() );
+    sphereActor->AddObserver ( vtkCommand::ModifiedEvent, actorCallback.Get() );
 
     renWin->Render();
 
     callActivityVoidMethod(app,"showUI");
     callActivityVoidMethod(app,"showSlider");
- 
+    callActivityVoidMethod(app,"showRadioButton");
  
     iren->Start();
-    
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="left"
+    android:padding="50dp"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    android:id="@+id/radio_group"
+    android:checkedButton="@+id/radio_sphere">
+    >
+    
+    <RadioButton android:id="@+id/radio_sphere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sphere"/>
+        
+    <RadioButton android:id="@+id/radio_cube"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cube"/>
+        
+</RadioGroup>
