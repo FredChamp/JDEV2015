@@ -53,6 +53,8 @@ static vtkActor* s_cubeActor = NULL;
 static vtkActor* s_sphereActor = NULL;
 static vtkRenderer* renderer = NULL;
 
+static double s_opacity = 1.;
+
 //------------------------------------------------------------------------------
 
 void callActivityVoidMethod(struct android_app* app, const char* method_name )
@@ -108,8 +110,8 @@ static void changeOpacity(JNIEnv *env, jobject thiz, int value)
         current = s_sphereActor;
     }
     
-    double opacity = static_cast< double >(value) / 100.;
-    current->GetProperty()->SetOpacity(opacity);
+    s_opacity = static_cast< double >(value) / 100.;
+    current->GetProperty()->SetOpacity(s_opacity);
     current->Modified();
 }
 
@@ -148,6 +150,7 @@ static void showSphere(JNIEnv *env, jobject thiz)
      
     s_cubeActor->VisibilityOff();
     s_sphereActor->VisibilityOn();
+    s_sphereActor->GetProperty()->SetOpacity(s_opacity);
     
     s_cubeActor->Modified();
     s_sphereActor->Modified();
@@ -161,6 +164,7 @@ static void showCube(JNIEnv *env, jobject thiz)
     
     s_sphereActor->VisibilityOff();
     s_cubeActor->VisibilityOn();
+    s_cubeActor->GetProperty()->SetOpacity(s_opacity);
     
     s_sphereActor->Modified();
     s_cubeActor->Modified();
@@ -206,7 +210,7 @@ void android_main(struct android_app* app)
     cube->SetZLength(8);
     
     vtkNew<vtkSphereSource> sphere;
-    sphere->SetRadius(4);
+    sphere->SetRadius(5);
     sphere->SetThetaResolution(20);
     sphere->SetPhiResolution(20);
 
