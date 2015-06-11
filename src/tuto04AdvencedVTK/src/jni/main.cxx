@@ -86,9 +86,9 @@ void registerNatives(struct android_app* app,JNINativeMethod* methods, int nbMet
 void cubeActorCallbackMethod(vtkObject* caller, long unsigned int eventId, void* clientData, void* callData)
 {
     vtkActor *iren = static_cast<vtkActor*>(caller);
-     LOGI("Callback: cube Actor modified");
+     LOGI("Callback: vtkActor modified");
      
-     size_t cmd = 4;
+     int8_t cmd = APP_CMD_WINDOW_REDRAW_NEEDED;
      if (write(s_app->msgwrite, &cmd, sizeof(cmd)) != sizeof(cmd)) {
          LOGE("Failure writing android_app cmd: %s\n", strerror(errno));
      }
