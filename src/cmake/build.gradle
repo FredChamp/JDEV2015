@@ -44,37 +44,39 @@ android {
        }
     }
 
-    buildTypes {
-        release {
+    buildTypes 
+    {
+        debug 
+        {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                       def file = output.outputFile
-                     
-                       if(output.zipAlign) {
-                           output.outputFile = new File(file.parent, "${BASE_APP_NAME}" + "-release" + ".apk")
-                       }
-                       else{
-                           output.outputFile = new File(file.parent,"${BASE_APP_NAME}" + "-release" + "-unaligned" + ".apk")
-                       }
-                   }
-               }
+            applicationVariants.all 
         }
+        release 
+        {
 
-        debug {
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                       def file = output.outputFile
-                       if(output.zipAlign) {
-                           output.outputFile = new File(file.parent, "${BASE_APP_NAME}" + "-debug" + ".apk")
-                       }
-                       else {
-                           output.outputFile = new File(file.parent,"${BASE_APP_NAME}" + "-debug" + "-unaligned" + ".apk")
-                       }
+            debuggable false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-project.txt')
+                
+        }
+        
+        applicationVariants.all 
+        { variant ->
+            variant.outputs.each 
+            { output ->
+                   def file = output.outputFile
+                 
+                   if(output.zipAlign) 
+                   {
+                       if(buildTypes)
+                       output.outputFile = new File(file.parent, "${BASE_APP_NAME}" + "-" + variant.buildType.name + ".apk")
+                   }
+                   else{
+                       output.outputFile = new File(file.parent,"${BASE_APP_NAME}" + "-" + variant.buildType.name + "-unaligned" + ".apk")
                    }
                }
-        }
+           }
+        
 
         jnidebug.initWith(buildTypes.debug)
         jnidebug {

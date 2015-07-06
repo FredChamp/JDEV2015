@@ -18,7 +18,6 @@ macro(create_apk)
     ##################################################
     #  Copy java files
     ##################################################
-    # Copy "build.xml", "default.properties", "local.properties" and "proguard.cfg" files
     # and copy Java file which is responsible for loading in the required shared librarie
     set(DIR_LIST ${SOURCE_DIR} ${ADDITIONAL_PROJECTS})
     message("- Coping Java files ...")
