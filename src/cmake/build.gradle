@@ -64,16 +64,17 @@ android {
         { variant ->
             variant.outputs.each 
             { output ->
-                   def file = output.outputFile
+                  def alignedOutputFile = output.outputFile
+                  def unalignedOutputFile = output.packageApplication.outputFile
                  
                    if(output.zipAlign) 
                    {
                        if(buildTypes)
-                       output.outputFile = new File(file.parent, "${BASE_APP_NAME}" + "-" + variant.buildType.name + ".apk")
+                       output.outputFile = new File(alignedOutputFile.parent, "${BASE_APP_NAME}" + "-" + variant.buildType.name + ".apk")
                    }
-                   else{
-                       output.outputFile = new File(file.parent,"${BASE_APP_NAME}" + "-" + variant.buildType.name + "-unaligned" + ".apk")
-                   }
+ 
+                   output.packageApplication.outputFile = new File(unalignedOutputFile.parent,"${BASE_APP_NAME}" + "-" + variant.buildType.name + "-unaligned" + ".apk")
+
                }
            }
         
