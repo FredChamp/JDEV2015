@@ -31,6 +31,8 @@ macro(gradle_build)
         
     endif()
     
+    message("ANDROID_APK_KEYSTORE= ${ANDROID_APK_KEYSTORE}")
+    
     # Build the apk file
     if(CMAKE_BUILD_TYPE MATCHES Release)
         # Lets gralde create the apk file

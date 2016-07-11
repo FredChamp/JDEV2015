@@ -82,6 +82,8 @@ macro(create_apk)
     execute_process(
         COMMAND ${ADB_PRG} uninstall "${ANDROID_APK_PACKAGE}"
     )
+    
+    endif()
 
     # Build the apk file
     if( ${APK_BUILD_TOOL} STREQUAL "ant" )

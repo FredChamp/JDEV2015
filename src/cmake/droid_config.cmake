@@ -8,12 +8,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(LIBRARY_OUTPUT_DIR lib)
 
 set(APK_BUILD_TOOL    "gradle" CACHE STRING    "Build tool name will be used to create the apk (ant or gradle)")
-set(ANDROID_APK_RELEASE          "OFF"                     CACHE BOOL      "Create apk file ready for release? (signed, you have to enter a password during build, do also setup \"ANDROID_APK_SIGNER_KEYSTORE\" and \"ANDROID_APK_SIGNER_ALIAS\")")
-set(ANDROID_APK_TOP_LEVEL_DOMAIN "com"                       CACHE STRING    "Top level domain name of the organization (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
-set(ANDROID_APK_DOMAIN           "jdev2015"                    CACHE STRING    "Organization's domain (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
-set(ANDROID_APK_SUBDOMAIN        "MyAppName"                 CACHE STRING    "Any subdomains (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
-set(ANDROID_APK_SIGNER_KEYSTORE  "~/my-release-key.keystore" CACHE STRING    "Keystore for signing the apk file (only required for release apk)")
-set(ANDROID_APK_SIGNER_ALIAS     "myalias"                   CACHE STRING    "Alias for signing the apk file (only required for release apk)")
+set(ANDROID_APK_TOP_LEVEL_DOMAIN "com"                    CACHE STRING    "Top level domain name of the organization (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
+set(ANDROID_APK_DOMAIN           "jdev2015"               CACHE STRING    "Organization's domain (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
+set(ANDROID_APK_SUBDOMAIN        "MyAppName"              CACHE STRING    "Any subdomains (follow the package naming conventions (http://en.wikipedia.org/wiki/Java_package#Package_naming_conventions))")
+set(ANDROID_APK_KEYSTORE         "~/keystore/android.jks" CACHE PATH      "Keystore for signing the apk file (only required for release apk)")
+set(ANDROID_APK_KEYSTORE_PWD     "123456"                 CACHE STRING    "Keystore password (only required for release apk)")
+set(ANDROID_APK_KEY_ALIAS        "keyAlias"               CACHE STRING    "Key alias for signing the apk file (only required for release apk)")
+set(ANDROID_APK_KEY_PWD          "123456"                 CACHE STRING    "Key password (only required for release apk)")
     
 add_definitions(-DANDROID_APK_PACKAGE=\"${ANDROID_APK_TOP_LEVEL_DOMAIN}/${ANDROID_APK_DOMAIN}/${ANDROID_APK_SUBDOMAIN}\")
 
@@ -67,6 +68,7 @@ if(CMAKE_TOOLCHAIN_FILE)
     endif()
 
     file(TO_CMAKE_PATH "$ENV{JAVA_HOME}" JAVA_HOME_PATH)
+    
     
     #find jarsigner
     find_host_program(JARSIGNER_PRG

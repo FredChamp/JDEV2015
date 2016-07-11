@@ -15,7 +15,7 @@ macro(ant_build)
 
         # Sign the apk file
         execute_process(
-            COMMAND ${JARSIGNER_PRG} -verbose -keystore ${ANDROID_APK_SIGNER_KEYSTORE} bin/${BASE_APP_NAME}-unsigned.apk ${ANDROID_APK_SIGNER_ALIAS}
+            COMMAND ${JARSIGNER_PRG} -verbose -keystore ${ANDROID_APK_KEYSTORE} bin/${BASE_APP_NAME}-unsigned.apk ${ANDROID_APK_SIGNER_ALIAS}
             WORKING_DIRECTORY "${APK_INSTALL_DIR}"
         )
 
