@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="50dp"
+    android:layout_margin="10dp"
+    android:orientation="vertical">
+
+    <com.jdev2015.widget.VerticalSeekBar
+      android:id="@+id/seekBar_opacity"
+      android:layout_width="wrap_content"
+      android:layout_height="500dp"
+      android:max="100"
+      android:progress="100"/>
+      
+    <Button
+      android:id="@+id/blue_button"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:text="Blue"/>
+          
+    <Button
+      android:id="@+id/red_button"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:text="Red" />
+        
+</LinearLayout>

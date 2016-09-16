@@ -233,8 +233,7 @@ void android_main(struct android_app* app)
     
     renderer->AddActor(sphereActor.Get());
     renderer->AddActor(cubeActor.Get());
-    // renderer->SetBackground(0.26,0.28,0.41);
-    renderer->SetBackground(0,0,0);
+    renderer->SetBackground(0.26,0.28,0.41);
     renderer->ResetCamera();
     renderer->SetLightFollowCamera(true);
     

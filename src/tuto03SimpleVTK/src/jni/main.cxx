@@ -18,8 +18,6 @@
 #include <jni.h>
 #include <errno.h>
 
-#include "JNIHelper/JNIHelper.hpp"
-
 #include <vtkNew.h>
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -30,6 +28,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkCubeSource.h>
+#include <vtkSphereSource.h>
+#include <vtkConeSource.h>
 #include <vtkProperty.h>
 #include <vtkInteractorStyleMultiTouchCamera.h>
 #include <vtkAndroidRenderWindowInteractor.h>
@@ -85,6 +85,8 @@ void android_main(struct android_app* app)
     cubeMapper->SetInputConnection(cube->GetOutputPort());
     vtkNew<vtkActor> cubeActor;
     cubeActor->SetMapper(cubeMapper.Get());
+    // Set shading to flat
+    cubeActor->GetProperty()->SetInterpolationToGouraud();
 
     renderer->AddActor(cubeActor.Get());
     renderer->SetBackground(0.4,0.5,0.6);
@@ -93,7 +95,7 @@ void android_main(struct android_app* app)
     renWin->Render();
 
     callActivityVoidMethod(app,"showUI");
- 
+
     iren->Start();
     
 }

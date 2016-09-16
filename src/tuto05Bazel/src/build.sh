@@ -1,0 +1,1 @@
+bazel build -c opt NativeVTK_Bazel --crosstool_top=//external:android/crosstool --cpu=armeabi-v7a --host_crosstool_top=@bazel_tools//tools/cpp:toolchain

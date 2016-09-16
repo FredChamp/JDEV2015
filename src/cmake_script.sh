@@ -1,0 +1,1 @@
+cmake ../src/tuto04AdvancedVTK/src -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/Users/fchamp/Dev/JDEV2015-test/install_tuto04AdvancedVTK -DEXTERNAL_LIBRARIES=/Users/fchamp/Dev/CMake/v0.10/Deps-droid/Install_debug -DCMAKE_TOOLCHAIN_FILE="/Users/fchamp/Dev/Droid/Toolchain/android.toolchain.cmake"

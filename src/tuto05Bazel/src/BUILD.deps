@@ -1,0 +1,67 @@
+cc_library(
+    name = "vtk",
+    srcs = glob(["lib/libvtk*.so"]),
+    hdrs = glob(["include/vtk-6.3/*"]),
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "native_app_glue",
+    srcs = ["lib/libandroid_native_app.a"],
+    hdrs = ["include/android_native_app_glue.h"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "gnustl",
+    srcs = ["lib/libgnustl_shared.so"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "xml",
+    srcs = ["lib/libxml2.so"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "jpeg",
+    srcs = ["lib/libjpeg.so"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "expat",
+    srcs = ["lib/libexpat.so"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "freetype",
+    srcs = ["lib/libfreetype.so"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "png",
+    srcs = ["lib/libpng16d.so"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "tiff",
+    srcs = ["lib/libtiff.so"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "iconv",
+    srcs = ["lib/libiconv.so"],
+    visibility=["//visibility:public"],
+)
+
+cc_library(
+    name = "charset",
+    srcs = ["lib/libcharset.so"],
+    visibility=["//visibility:public"],
+)
